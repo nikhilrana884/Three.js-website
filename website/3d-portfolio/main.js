@@ -42,9 +42,9 @@ const ambientLight = new THREE.AmbientLight(0x0ff000);
 scene.add(pointLight, ambientLight);
 
 const lightHelper = new THREE.PointLightHelper(pointLight)
-//const gridHelper = new THREE.GridHelper(2000, 5000);
+const gridHelper = new THREE.GridHelper(2000, 5000);
 
-//scene.add( gridHelper)
+scene.add( gridHelper)
 
 const controls = new OrbitControls(camera, renderer.domElement);
 
@@ -63,26 +63,39 @@ function addStar() {
 
 Array(200).fill().forEach(addStar);
 
-
-
-  const loader = new GLTFLoader();
-  loader.load( '../assets/skyline.glb', function ( gltf ) {
-    scene.add(gltf.scene);
-    } );
-
   const spaceTexture = new THREE.TextureLoader().load('../assets/space.jpg');
   scene.background = spaceTexture;
+
+  var geom = new THREE.BoxGeometry(10, 10, 10);
+var mat = new THREE.MeshBasicMaterial({color: "red"});
+var cube = new THREE.Mesh(geom, mat);
+
+scene.add(cube);
+camera.position.x = 2;
+camera.position.y = 1;
+camera.position.z = 20;
+
+var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+scene.add( light );
+
+var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 );
+scene.add( directionalLight );
+
+
 function animate() {
   requestAnimationFrame(animate);
 
-  
   torusKnot.rotation.x += 0.005;
   torusKnot.rotation.y += 0.005;
   torusKnot.rotation.z += 0.005;
 
-  controls.update();
+  cube.rotation.y += 0.01;
+  cube.rotateZ(0.05);
+  cube.rotateY(0.05);
 
   renderer.render(scene,camera);
 }
+
+
 
 animate()
