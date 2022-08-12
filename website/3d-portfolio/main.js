@@ -82,8 +82,30 @@ var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 );
 scene.add( directionalLight );
 
 
+createCannonConvex(geometry){
+  if (!geometry.isBufferGeometry) return null;
+  
+  const posAttr = geometry.attributes.position;
+  const floats = geometry.attributes.position.array;
+  const vertices = [];
+  const faces = [];
+  let face = [];
+  let index = 0;
+  for(let i=0; i<posAttr.count; i+=3){
+    vertices.push( new CANNON.Vec3(floats[i], floats[i+1], floats[i+2]) );
+    face.push(index++);
+    if (face.length==3){
+      faces.push(face);
+      face = [];
+    }
+  }
+  
+  return new CANNON.ConvexPolyhedron(vertices, faces);
+}
+
 function animate() {
   requestAnimationFrame(animate);
+  
 
   torusKnot.rotation.x += 0.005;
   torusKnot.rotation.y += 0.005;
